@@ -1,27 +1,25 @@
-FROM php:8.1-apache
+FROM php:8.1-fpm
 
-# Install dependencies
 RUN apt-get update && apt-get install -y \
-    git zip unzip libpng-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    git curl libpng-dev libjpeg-dev libfreetype6-dev zip unzip libonig-dev libxml2-dev
 
-# Install Composer
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy code and .env
 WORKDIR /var/www/html
-COPY . .
-COPY .env.example .env  # Salin .env.example sebagai .env (ubah kalau pakai .env lain)
 
-# Install Laravel dependencies
+COPY . .
+
+# Copy .env.example ke .env agar artisan bisa jalan
+RUN cp .env.example .env
+
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate key and permissions
 RUN php artisan key:generate --force
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Apache config
-RUN a2enmod rewrite
-EXPOSE 80
+CMD php artisan serve --host=0.0.0.0 --port=${PORT}
 
-CMD php artisan serve --host=0.0.0.0 --port=80 --no-reload
+EXPOSE 8000
