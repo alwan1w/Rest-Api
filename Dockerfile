@@ -8,9 +8,10 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy code
+# Copy code and .env
 WORKDIR /var/www/html
 COPY . .
+COPY .env.example .env  # Salin .env.example sebagai .env (ubah kalau pakai .env lain)
 
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
