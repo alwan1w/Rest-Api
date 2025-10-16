@@ -15,10 +15,6 @@
             <input type="email" name="email" id="email" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="photo" class="form-label">Foto (maks 2MB)</label>
-            <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
-        </div>
-        <div class="mb-3">
             <label for="description" class="form-label">Deskripsi (opsional)</label>
             <textarea name="description" id="description" class="form-control"></textarea>
         </div>

@@ -23,9 +23,6 @@
                             </form>
                         </div>
                     </div>
-                    @if($user->photo)
-                        <img src="{{ asset($user->photo) }}" alt="Foto {{ $user->name }}" class="ms-3" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;"> <!-- Bikin bulat untuk lebih rapi, atau ganti radius ke 5px kalau mau kotak -->
-                    @endif
                 </div>
             </div>
         @endforeach

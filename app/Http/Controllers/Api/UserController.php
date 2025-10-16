@@ -19,7 +19,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'photo' => 'nullable|image|max:2048', // Maks 2MB
             'description' => 'nullable|string',
             'address' => 'nullable|string|max:255',
         ]);
@@ -28,14 +27,7 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $data = $request->all();
-        if ($request->hasFile('photo')) {
-            $fileName = time() . '_' . $request->file('photo')->getClientOriginalName();
-            $request->file('photo')->move(public_path('uploads'), $fileName);
-            $data['photo'] = 'uploads/' . $fileName;
-        }
-
-        $user = User::create($data);
+        $user = User::create($request->only('name', 'email', 'description', 'address'));
         return response()->json($user, 201);
     }
 
@@ -58,7 +50,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'photo' => 'nullable|image|max:2048', // Maks 2MB
             'description' => 'nullable|string',
             'address' => 'nullable|string|max:255',
         ]);
@@ -67,17 +58,7 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $data = $request->all();
-        if ($request->hasFile('photo')) {
-            if ($user->photo && file_exists(public_path($user->photo))) {
-                unlink(public_path($user->photo));
-            }
-            $fileName = time() . '_' . $request->file('photo')->getClientOriginalName();
-            $request->file('photo')->move(public_path('uploads'), $fileName);
-            $data['photo'] = 'uploads/' . $fileName;
-        }
-
-        $user->update($data);
+        $user->update($request->only('name', 'email', 'description', 'address'));
         return response()->json($user, 200);
     }
 
@@ -87,9 +68,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        if ($user->photo && file_exists(public_path($user->photo))) {
-            unlink(public_path($user->photo));
-        }
+
         $user->delete();
         return response()->json(['message' => 'User deleted'], 200);
     }

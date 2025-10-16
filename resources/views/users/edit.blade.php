@@ -16,13 +16,6 @@
             <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" required>
         </div>
         <div class="mb-3">
-            <label for="photo" class="form-label">Foto (maks 2MB, kosongkan jika tidak ganti)</label>
-            <input type="file" name="photo" id="photo" class="form-control" accept="image/*">
-            @if($user->photo)
-                <img src="{{ asset($user->photo) }}" alt="Foto {{ $user->name }}" style="max-width: 200px; margin-top: 10px;">
-            @endif
-        </div>
-        <div class="mb-3">
             <label for="description" class="form-label">Deskripsi (opsional)</label>
             <textarea name="description" id="description" class="form-control">{{ $user->description }}</textarea>
         </div>
